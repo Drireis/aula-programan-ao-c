@@ -1,0 +1,115 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX 50
+
+typedef struct {
+  char musica[20];
+  char cantor;
+  float tempo;
+} Playlist;
+
+typedef struct {
+  Playlist dado[MAX];
+  int n;
+} ListaMusicas;
+
+ListaMusicas lista;
+ListaMusicas listaAdimplentes;
+Playlist playlist;
+
+// Protótipos das funções
+
+void instancia(Playlist *, char *, char , float);
+void ordenar(ListaMusicas *);
+int acrescentar(ListaMusicas *, Playlist);
+int remover(ListaMusicas *, int);
+int imprimir(ListaMusicas *);
+
+// Implementação das funções de acesso à lista
+void instancia(Playlist *playlist, char *nome, char altura, float peso){
+  strcpy(playlist->musica, nome);
+  playlist->cantor = altura;
+  playlist->tempo = peso;
+}
+
+int acrescentar(ListaMusicas *L, Playlist aluno) {
+  int total = L->n;
+  if (total >= MAX)
+    return 0;
+  L->dado[total] = aluno;
+  (L->n)++;
+  return 1;
+}
+
+int remover(ListaMusicas *L, int pos) {
+  int i;
+  if ((pos > L->n) || (pos <= 0))
+    return 0;
+  for (i = pos; i <= (L->n) - 1; i++)
+    L->dado[i - 1] = L->dado[i];
+  (L->n)--;
+  return 1;
+}
+
+int imprimir(ListaMusicas *L) {
+  int i;
+  printf("%-3s %-10s %-6s %-5s %-10s n", "Pos", "Aluno", "Altura", "Peso",
+         "Adimplente");
+  printf("%-3s %-10s %-6s %-5s %-10s n", "---", "----------", "------", "----",
+         "----------");
+  int total = L->n;
+  for (i = 0; i < total; i++)
+    printf("%-3d %-10s %-6.2f %-5.1f %-10c n", i + 1, L->dado[i].nome,
+           L->dado[i].musica, L->dado[i].cantor, L->dado[i].tempo);
+  printf("n");
+}
+void ordenar(ListaMusicas *L) {
+  int i, j, min;
+  int n = L->n;
+  Playlist temp;
+  for (i = 0; i < n - 1; i++) {
+    min = i;
+    for (j = i + 1; j < n; j++) {
+      if (strcmp(L->dado[j].musica, L->dado[min].musica) < 0)
+        min = j;
+      temp = L->dado[min];
+      L->dado[min] = L->dado[i];
+      L->dado[i] = temp;
+    }
+  }
+}
+main() {
+  float m;
+  instancia(&playlist, "Paula", 1.60, 63.8, 'S');
+  acrescentar(&lista, playlist);
+  printf("Paula adicionada. n");
+  instancia(&playlist, "Pedro", 1.80, 81.5, 'S');
+  acrescentar(&lista, aluno);
+  printf("Pedro adicionado. n");
+  instancia(&aluno, "Ana", 1.52, 49.9, 'N');
+  acrescentar(&lista, aluno);
+  printf("Ana adicionada. n");
+  instancia(&aluno, "Maria", 1.69, 58.0, 'S');
+  acrescentar(&lista, aluno);
+  printf("Maria adicionada. n");
+  instancia(&aluno, "Joao", 1.75, 90.1, 'N');
+  acrescentar(&lista, aluno);
+  printf("Joao adicionado. nn");
+  printf("Lista geral de alunos da academia: n");
+  imprimir(&lista);
+  ordenar(&lista);
+  printf("Lista geral ordenada por nome: n");
+  imprimir(&lista);
+  criarAdimplentes(&lista, &listaAdimplentes);
+  printf("Sublista adimplentes que podem ganhar desconto: n");
+  imprimir(&listaAdimplentes);
+  remover(&lista, 2);
+  printf("Joao removido da lista geral. nn");
+  printf("Lista geral de alunos da academia: n");
+  imprimir(&lista);
+  m = mediaAltura(&lista);
+  printf("A media de altura da lista geral eh: %.2f n", m);
+  m = mediaAltura(&listaAdimplentes);
+  printf("A media de altura da lista adimplentes eh: %.2f n", m);
